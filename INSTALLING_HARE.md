@@ -92,7 +92,7 @@ hare 0.24.2-rc1-256-g707c16c0
 
 # Probando todo
 
-Escribe este programa
+Escribe este programa en un archivo llamado `main.hare`
 
 ```hare
 use fmt;
