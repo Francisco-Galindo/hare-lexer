@@ -20,8 +20,7 @@ export fn main() void = {
 	};
 	defer io::close(file)!;
 
-	let buffer: *[65535]u8 = alloc([0...]);
-	defer free(buffer);
+	static let buffer: [65535]u8 = [0...];
 
 	const scan = bufio::newscanner(file, types::SIZE_MAX);
 	const lexer = lex::init(&scan, path);
