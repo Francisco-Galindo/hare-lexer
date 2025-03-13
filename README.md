@@ -48,6 +48,44 @@ Tokens are meaningful sequences of characters, than can be divided into six diff
 * Operators: these characters are asigned to this group when their purpose is to indicate a type of operation that is going to be realized, such as "+", "-", etc.
 Constants: these are strings that, once the code is executed their value will never change, such as numbers or strings asigned to variables.
 
+Tokens are the inputs for syntax analysis and interpret the meaning of these tokens. Syntax analysis checks if the tokens are arranged according to the language’s grammar. A context-free grammar define the syntax rules of a programming language. A grammar is said to be the context-free grammar (CFG) if every production is in the form of:
+
+G -> (V&cup;T)*, where G &isin; V 
+
+This equation states that every production which contains any combination of the 'V' variable or 'T' terminal is said to be a context-free grammar. 
+
+A context-free grammar is defined by:
+1. Nonterminal symbols (variables).
+2. Terminal symbols (alphabet).
+3. Production rules.
+4. Start symbol.
+
+Context-free grammars have some problems and limitations, including ambiguity and left recursion. Ambiguity generates multiple parse trees for the same input, and left recursion can cause an infinite loop. To create an optimal syntax analyzer, we need to ensure that the CFG is deterministic, right-recursive (eliminating left recursion), and reduces or eliminates ambiguity.
+
+A grammar has direct left recursion if there is a derivation: S -> S𝛼|β, where 𝛼 is a string that can contain terminals or non-terminals, and β is a terminal . The algorithm to convert it to right recursion begins by introducing a new nonterminal and writing it at the end of every production: S -> β S' 
+
+The newly produced nonterminal S' can either produce S' or it can produce a new production where the terminals or non-terminals that follow S will be replaced by the new nonterminal S' at the end of the term: S' -> 𝛼S'|ε
+
+After conversion, the new equivalent production is:
+
+S -> β S' 
+
+S' -> 𝛼S'|ε
+
+This process can be repeated for all the introduced nonterminal if they still have left recursion. Additionally, it can be combined with left factoring.
+
+Left factoring removes the common left factor that appears in two or more productions of the same nonterminal, introducing a new nonterminal. For the production:
+
+A -> 𝛼β1|𝛼β2|𝛼β3
+
+After applying left factoring, the grammar becomes:
+
+A -> 𝛼A'
+
+A' -> β1|β2|β3
+
+In compiler design, BNF stands for Backus-Naur Form notation. It is a formal method for describing the syntax of programming languages, which is understood as the Backus-Naur Form introduced by John Backus and Peter Naur in 1960. The symbol '::=' means "may expand into" or "may be replaced with." Every name is surrounded by angle brackets (< >), whether it appears on the left- or right-hand side of the rule. Simply juxtaposing expressions indicates sequencing, and a vertical bar (|) indicates choice.
+
 To create our lexical analyzer we decided to use a language called Hare. Hare is a language designed to be simple, stable, and robust, using a static type system, manual memory managment and minimal runtime. This language was specially designed to be used on operating systems, compilers and other low level, high performance tasks
 
 ## Development
