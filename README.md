@@ -53,6 +53,7 @@ To create our lexical analyzer we decided to use a language called Hare. Hare is
 ## Development
 
 ### Lexer construction
+To create the lexer, first we needed to know what keywords formed part of the hare language so as to make clear to the lexer, if those words appeared, that they are not identifiers. For this, we created a document called tokens.ha where you can see the list of keywords found in the hare language.
 
 ### Context-Free Grammar
 
