@@ -329,5 +329,5 @@ Additionally, optimizations in lexical analysis, such as minimizing the number o
 Ultimately, a well-designed lexer and a properly structured context-free grammar form the foundation for a robust compiler. They ensure that source code is analyzed correctly from the beginning, reducing errors and improving the overall compilation process. This structured approach is essential for developing reliable programming language tools and efficient language processing systems.
 
 ## Sources
-https://www.geeksforgeeks.org/introduction-of-lexical-analysis/
-https://harelang.org/
+[1]Drew DeVault, "The Hare programming language",harelang, 14-july-2024. [https://harelang.org/].[Accedido: Marzo-2025]
+[2]"Introduction of Lexical Analysis", geeksforgeeks, 27/January/2025. [https://www.geeksforgeeks.org/introduction-of-lexical-analysis/]. [Accedido: Marzo-2025]
