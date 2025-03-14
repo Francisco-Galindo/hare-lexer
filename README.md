@@ -7,14 +7,16 @@ A lexer for the hare programming language
 
 
 Conclution
+After completing the lexer, we have drawn the following conclusions: 
+With the lexer finished, we can now move forward with building the parser. 
+Since this part was successfully completed, it provides a solid foundation for continuing 
+with the development of the compiler. As a result, we now have a base to proceed with the next phase: 
+building the parser.
 
-After concluid the lexer we have got the following conclutions:
-With the lexer concluyed we can take hands on for the build of the Parcer. 
-Part of had finished propely this one part, is had a base for continue with the build of a compiler,
- as part of, we got a base for the next phase: build a Parcer.
-About code the team has had problems with packages instalation, 
-solution given for the project manager was the provided of a git seccion with pass-per-pass 
-to get the library packager mounted on the múltiples deviced specified in ××*#,@ .
+Regarding the code, the team faced issues with package installations. 
+The solution provided by the project manager was to offer a Git section with a step-by-step 
+guide to help install the library packages.
+
 
 The results were the correcly spected on Theorical Background.
 
