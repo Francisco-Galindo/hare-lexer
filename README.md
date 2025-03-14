@@ -21,24 +21,24 @@
 
 
 
-## Table of contents   
+## Table of contents
 1. [Introduction](#introduction)
 2. [Theorical Background](#theoricalbackground)
 3. [Development](#development)
    1. [Lexer construction](#lexerconstruction)
-   2. [Context-Free Grammar](#context-freegrammar)  
+   2. [Context-Free Grammar](#context-freegrammar)
 4. [Results](#results)
 5.  [Conclusion](#conclusion)
 6.   [Sources](#sources)
 
 
 
-## Introduction  
+## Introduction
 In this project, our team will develope a lexer using the Hare programming language, both for implementing the lexical analyzer and for the language it will process. The lexer is one of the first stages on a compiler or interpreter, its main function is to take a sequence of characters from the input and transform it into a string of tokens, that represent meaningful sintactic units of the language.
 Using Hare as the development language will allow us to take advantage of its minimalist and efficient approach, ensuring a fast and reliable lexer. Throughout the development process, we will implement lexical rules that will define the structure of the target language, including identifiers, operators, keywords and other essential sintactic elements.
 This project will not only allow us to explore the construction of lexical analyzers but also deepen our understanding of Hare ans its applicability in developing tools for programming languages.
 
-## Theorical Background 
+## Theorical Background
 The first phase of a compiler is known as lexical analisys. In this phase, the source program is read character by character from left to right, organizing each part of the code into tokens.
 Tokens are meaningful sequences of characters, than can be divided into six different categories depending on the characteristic of the token and the programming language, being the categories of the tokens the next ones:
 * Keywords: the strings asigned to this group are the the ones that belong to strings that are reserved as special words for the language An example for this in Hare is the word let, to declare variables.
@@ -50,9 +50,9 @@ Constants: these are strings that, once the code is executed their value will ne
 
 Tokens are the inputs for syntax analysis and interpret the meaning of these tokens. Syntax analysis checks if the tokens are arranged according to the language’s grammar. A context-free grammar define the syntax rules of a programming language. A grammar is said to be the context-free grammar (CFG) if every production is in the form of:
 
-G -> (V&cup;T)*, where G &isin; V 
+G -> (V&cup;T)*, where G &isin; V
 
-This equation states that every production which contains any combination of the 'V' variable or 'T' terminal is said to be a context-free grammar. 
+This equation states that every production which contains any combination of the 'V' variable or 'T' terminal is said to be a context-free grammar.
 
 A context-free grammar is defined by:
 1. Nonterminal symbols (variables).
@@ -62,13 +62,13 @@ A context-free grammar is defined by:
 
 Context-free grammars have some problems and limitations, including ambiguity and left recursion. Ambiguity generates multiple parse trees for the same input, and left recursion can cause an infinite loop. To create an optimal syntax analyzer, we need to ensure that the CFG is deterministic, right-recursive (eliminating left recursion), and reduces or eliminates ambiguity.
 
-A grammar has direct left recursion if there is a derivation: S -> S𝛼|β, where 𝛼 is a string that can contain terminals or non-terminals, and β is a terminal . The algorithm to convert it to right recursion begins by introducing a new nonterminal and writing it at the end of every production: S -> β S' 
+A grammar has direct left recursion if there is a derivation: S -> S𝛼|β, where 𝛼 is a string that can contain terminals or non-terminals, and β is a terminal . The algorithm to convert it to right recursion begins by introducing a new nonterminal and writing it at the end of every production: S -> β S'
 
 The newly produced nonterminal S' can either produce S' or it can produce a new production where the terminals or non-terminals that follow S will be replaced by the new nonterminal S' at the end of the term: S' -> 𝛼S'|ε
 
 After conversion, the new equivalent production is:
 
-S -> β S' 
+S -> β S'
 
 S' -> 𝛼S'|ε
 
@@ -151,18 +151,103 @@ This way, all keywords can be detected, as well as all operators, identifiers an
 ### Context-Free Grammar
 
 
+### Test inputs
+
+The reading test presented previously can be used to test the ability of our lexer to correctly tokenize a file.
+
+A CLI was made for our lexer in order to test it with any source code file. It can print all tokens it finds, along with its position in the file and type of token. It can count the tokens as well. In these tests, the count is shown because otherwise the output would be a little too long.
+
+This is the output the built-in (i.e. not made by us) lexer shows:
+
+```
+$ hare run main.ha -f testfiles/fac.ha -c
+Number of Tokens: 80
+```
+
+The output presented by our own lexer is the same:
+
+```
+$ hare run main.ha -f testfiles/fac.ha -c
+Number of Tokens: 80
+```
+
+Another file that can be tested is this one, which reads a file and prints its contents:
+
+```hare
+use errors;
+use fmt;
+use io;
+use os;
+use fs;
+
+export fn main() void = {
+	let path = os::args[1];
+
+	const file = match(os::open(path)) {
+	case let f: io::file =>
+		yield f;
+	case let err: fs::error =>
+		fmt::fatalf("Unable to open {}: {}",
+			path, fs::strerror(err));
+	};
+	defer io::close(file)!;
+
+	let buffer: *[65535]u8 = alloc([0...]);
+	defer free(buffer);
+
+	for (true) {
+		const n = match(io::read(file, buffer)) {
+		case let err: errors::error =>
+			fmt::fatalf("Error reading {}: {}",
+				path, errors::strerror(err));
+		case let m: (size | io::EOF) =>
+			yield m as size;
+		};
+		io::write(os::stdout, buffer[..n])!;
+		if (n < 65535) {
+			break;
+		};
+	};
+};
+```
+
+This program is interesting because it includes many of Hare's keywords and other tokens like constants. The output from the reference lexer is:
+
+```
+$ hare run main.ha -f testfiles/readfile.ha -c
+Number of Tokens: 209
+```
+
+Our lexer produces the same output!:
+
+```
+$ hare run main.ha -f testfiles/readfile.ha -c
+Number of Tokens: 209
+```
+
+Screenshots will be shown in the *results* section to provide more tangible proofs.
+
+
 ## Results
+
+Here we present some screenshots of our lexer in action:
+
+![Getting help to run our command](img/help.png)
+
+![Parsing a hello world program](img/lex.png)
+
+![Reading a file which contains invalid tokens](img/fail.png)
 
 ## Conclusion
 
-After completing the lexer, we have drawn the following conclusions: 
-With the lexer finished, we can now move forward with building the parser. 
-Since this part was successfully completed, it provides a solid foundation for continuing 
-with the development of the compiler. As a result, we now have a base to proceed with the next phase: 
+After completing the lexer, we have drawn the following conclusions:
+With the lexer finished, we can now move forward with building the parser.
+Since this part was successfully completed, it provides a solid foundation for continuing
+with the development of the compiler. As a result, we now have a base to proceed with the next phase:
 building the parser.
 
-Regarding the code, the team faced issues with package installations. 
-The solution provided by the project manager was to offer a Git section with a step-by-step 
+Regarding the code, the team faced issues with package installations.
+The solution provided by the project manager was to offer a Git section with a step-by-step
 guide to help install the library packages.
 
 
