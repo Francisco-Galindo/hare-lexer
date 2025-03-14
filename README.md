@@ -114,11 +114,15 @@ The following context-free grammar was developed by the team as an initial step 
 
 <conditional> ::= "if" "(" <condition> ")" <block>
 
+<primitive-type> ::= <integer> | <bool> | "void"
+
+<bool> ::= "True" | "False" 
+
 <integer> ::= [0-9]+
 
 <identifier> ::= [a-zA-Z_][a-zA-Z0-9_]*
 ```
-The reading example is the following Hare code (fac.ha), located in the testfiles directory:
+The reading example is the following Hare code (fac.ha), located in the testfiles directory. The CFG is specific for the code:
 
 ```hare
 use fmt;
