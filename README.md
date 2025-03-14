@@ -149,6 +149,89 @@ This way, all keywords can be detected, as well as all operators, identifiers an
 
 
 ### Context-Free Grammar
+The following context-free grammar was developed by the team as an initial step for the syntax analyzer, applying left factoring and right recursion to reduce ambiguity and avoid infinite loops. It is represented in Backus-Naur Form and is based on a reading example used as a test.
+```
+<program> ::= <import> <function-declaration> <function-declaration>
+
+<import> ::= "use" <identifier> ";"
+
+<function-declaration> ::= <function-prefix> <identifier> "(" <parameters> ")" <return-type> "=" <block>
+
+<function-prefix> ::= "export" "fn" | "fn"
+
+<return-type> ::= "void" | <primitive-type>
+
+<parameters> ::= <parameter> <parameters'>
+<parameters'> ::= "," <parameter> <parameters'> | ε
+
+<parameter> ::= <identifier> ":" <primitive-type>
+
+<block> ::= "{" <statements> "}"
+
+<statements> ::= <statement> <statements> | ε
+
+<statement> ::= <variable-declaration> ";"
+              | <loop>
+              | <function-call> ";"
+              | <assignment> ";"
+              | <return-statement> ";"
+              | <conditional>
+
+<variable-declaration> ::= "let" <identifier> "=" <expression>
+
+<loop> ::= "for" "(" <condition> ")" <block>
+
+<condition> ::= <expression>
+
+<assignment> ::= <identifier> <assignment-operator> <expression>
+
+<assignment-operator> ::= "=" | "-="
+
+<expression> ::= <term> <expression'>
+
+<expression'> ::= <binary-operator> <term> <expression'> | ε
+
+<term> ::= <function-call> | <integer> | <identifier>
+
+<binary-operator> ::= "+" | "-" | "*" | "/"
+
+<function-call> ::= <identifier> <function-call'>
+
+<function-call'> ::= "::" <identifier> "(" <arguments> ")" "!" 
+                   | "(" <arguments> ")"
+
+<arguments> ::= <expression> <arguments'>
+<arguments'> ::= "," <expression> <arguments'> | ε
+
+<return-statement> ::= "return" <expression>
+
+<conditional> ::= "if" "(" <condition> ")" <block>
+
+<integer> ::= [0-9]+
+
+<identifier> ::= [a-zA-Z_][a-zA-Z0-9_]*
+```
+The reading example is the following Hare code (fac.ha), located in the testfiles directory:
+
+```hare
+use fmt;
+
+export fn main() void = {
+	let n = 5;
+	for (n >= 0) {
+		fmt::printfln("n: {} \tfac(n): {}", n, fac(n))!;
+		n -= 1;
+	};
+};
+
+fn fac(n: int) int = {
+	if (n <= 1) {
+		return 1;
+	};
+	return n * fac(n-1);
+};
+
+```
 
 
 ### Test inputs
