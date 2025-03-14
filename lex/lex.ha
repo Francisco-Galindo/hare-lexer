@@ -113,8 +113,12 @@ export fn lex(lexr: *lexer) (token | error) = {
 };
 
 export fn strerror(err: error) const str = {
-	// return fmt::asprintf("Error while parsing ({}): {}\n", error.0, error.1);
-	return fmt::asprintf("ERROR");
+	match (err) {
+	case let err: io::error =>
+		return io::strerror(err);
+	case let err: syntax =>
+		return fmt::asprintf("(line {}, col {}): {}", err.0.line, err.0.col, err.1);
+	};
 };
 
 export fn unlex(lexr: *lexer, tok: token) void = {
