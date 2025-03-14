@@ -145,13 +145,13 @@ fn fac(n: int) int = {
 ```
 Here are some examples of DFA from the previous grammar:
 
-<img src="images/dfa_let.png" alt="let DFA " width="400"/>
+<img src="images/dfa_let.png" alt="let DFA " width="600"/>
 
 <img src="images/dfa_hare.png" alt="program DFA " width="1000"/>
 
-<img src="images/dfa_if.png" alt="if DFA " width="600"/>
+<img src="images/dfa_if.png" alt="if DFA " width="800"/>
 
-<img src="images/dfa_for.png" alt="for DFA " width="600"/>
+<img src="images/dfa_for.png" alt="for DFA " width="800"/>
 
 <img src="images/dfa_identifier.png" alt="identifier DFA " width="400"/>
 
