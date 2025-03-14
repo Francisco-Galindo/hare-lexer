@@ -322,11 +322,11 @@ Here we present some screenshots of our lexer in action:
 ![Reading a file which contains invalid tokens](img/fail.png)
 
 ## Conclusion
-Lexical analysis is a critical phase in compiler construction. The tokens obtained in this phase are fundamental for advancing to syntactic analysis, as they serve as input. Classifying tokens allows for a better structuring of the elements that make up the analyzed language. Tools such as LEX facilitate input scanning.
+With the obtained results, the lexer can be used to proceed to the next stage, building upon the ideas developed in the creation of the context-free grammar for the selected example. At this point, the syntactic analysis phase begins, where the structured tokens are processed according to the grammar rules to construct a parse tree or an abstract syntax tree (AST). This step is crucial because it ensures that the source code follows the correct syntax and allows further stages, such as semantic analysis and code generation, to operate efficiently.
 
-A correct definition of the context-free grammar at this stage enables the construction of an effective derivation tree to analyze the language and give meaning to the tokens obtained in lexical analysis. To achieve this, determinism, minimal ambiguity, and right recursion are necessary. These can be attained using techniques and algorithms such as left factoring and right recursion.
+Additionally, optimizations in lexical analysis, such as minimizing the number of states in the DFA or refining token classification strategies, can enhance the performance of the compiler. The integration between lexical and syntactic analysis must be seamless to avoid ambiguities and inefficiencies in parsing. As a result, techniques like left factoring and right recursion not only improve the structure of the grammar but also contribute to making the parsing process more predictable and efficient.
 
-With the obtained results, the lexer can be used to proceed to the next stage, building upon the ideas developed in the creation of the context-free grammar for the selected example.
+Ultimately, a well-designed lexer and a properly structured context-free grammar form the foundation for a robust compiler. They ensure that source code is analyzed correctly from the beginning, reducing errors and improving the overall compilation process. This structured approach is essential for developing reliable programming language tools and efficient language processing systems.
 
 ## Sources
 https://www.geeksforgeeks.org/introduction-of-lexical-analysis/
