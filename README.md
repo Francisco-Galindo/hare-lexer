@@ -2,19 +2,19 @@
 
 <div align="center">
   <img src="https://cloudfront-us-east-1.images.arcpublishing.com/infobae/QLXAPU64VVD7DMR5ZF7VIEH4HQ.jpg" alt="Logo UNAM" width="200"/>
-  <h1> Universidad Nacional Autónoma de México </h1>
-  <h2> Ingeniería en Computación </h2>
-  <h2> Compiladores </h2>
-  <h1> Lexer - Lexical Analysis </h1>
-  <h2> Alumnos: </h2>
-  <h3>320198388</h3>
-  <h3>320051665</h3>
-  <h3>320298608</h3>
-  <h3>320244612</h3>
-  <h3>320054336</h3>
-  <h2> Grupo 5 </h2>
-  <h2> Semestre 2025-2 </h2>
-  <h4> México, CDMX. Marzo 2025 </h4>
+  <p> Universidad Nacional Autónoma de México </p>
+  <p> Ingeniería en Computación </p>
+  <p> Compiladores </p>
+  <p> Lexer - Lexical Analysis </p>
+  <p> Alumnos: </p>
+  <p>320198388</p>
+  <p>320051665</p>
+  <p>320298608</p>
+  <p>320244612</p>
+  <p>320054336</p>
+  <p> Grupo 5 </p>
+  <p> Semestre 2025-2 </p>
+  <p> México, CDMX. Marzo 2025 </p>
 </div>
 
 
@@ -91,7 +91,62 @@ To create our lexical analyzer we decided to use a language called Hare. Hare is
 ## Development
 
 ### Lexer construction
-To create the lexer, first we needed to know what keywords formed part of the hare language so as to make clear to the lexer, if those words appeared, that they are not identifiers. For this, we created a document called tokens.ha where you can see the list of keywords found in the hare language.
+
+One of the ways of creating a lexer for a programming language is to, using a CFG as a base, construct a DFA and code it out in some programming language. If *regex* are used to represent a template for each of the tokens, doing this would require writing a *regex* parser and generate code based on it, which is almost making a FLEX clone. Creating the DFA manually and writning code based on it is more tedious, but easier and quicker to do. While the code written is not a DFA explicitely, it consumes characters in the same order and following the same conditions as a DFA would.
+
+The Hare standard library already has a parser that works with Hare code. This means that we have a baseline we can follow and run our test against. In order to not write testing code twice, it was decided to write this lexer using the same interface as the lexer in the *stdlib*.
+
+The file tree for this project looks like this:
+
+```
+.
+├── INSTALLING_HARE.md
+├── lex
+│   ├── lex.ha
+│   └── token.ha
+├── LICENSE
+├── main.ha
+├── README.md
+└── testfiles
+    ├── fac.ha
+    ├── greeting.ha
+    ├── helloworld.ha
+    ├── readfile.ha
+    └── slice.ha
+```
+
+The `main.ha` file contains the driver code for testing our lexer. The actual lexer is in the `lex` directory.
+
+A comprehensive list of keywords and operators is defined in the `token.ha` file along with some type definitions for representing the tokens themselves and a location in the text file. This file was taken from the original Hare code, because it saves time when looking for each keyword. The file, however, holds little to no logic.
+
+The lexer logic is in `lex.ha`. The lexer type definition is here and all the functions that manipulate it are here as well. Broadly, the `lex` function takes a lexer (whis is only a struct to hold the state of the lexer) and returns the next token. `lex` has to be called multiple times in order to get all tokens in a file.
+
+Whenever `lex` is called, the next rune (almost a synonym of character, but when talking of *UTF8* encoding) is read, updating the lexer state, and depending on the pattern it follows, a token is matched. When dealing with tokens that span more than one rune, more characters are consumed automatically and matched with the valid patterns.
+
+For example, when reading the `=` rune, the character after that is also read and compared with the following patterns: `==`, `=>`. If the second rune was a `=` or a `>`, we know the comparison operator or the arrow operator were read. If it is another thing, then we know it was the assignment operator and the lexer goes one rune back. The lexing process will continue with another `lex` call.
+
+If a digit is read, then more runes are consumed until they are not digits. This way integer constants can be recognized. Floating point constants are not included, because numbers are actually somewhat cumbersome to parse. Consider these:
+
+```c
+100 // Valid
+100.5 // valid
+001 // invalid
+560.8.1 //invalid
+1_000_000 // valid
+1_000_000_ // invalid
+10e4 /valid
+0b100101010110 // valid
+0o561764 // valid
+0xFFee00 // validmm
+0xGG0000 // invalid
+```
+
+We would need to encode these (and more) cases in order to make a full number lexer. This is why only positive integers in base 10, 2, 8 and 16 were included.
+
+String literals are read whenever a `"` is found. Identifiers are read whenever a character which is not part of an operator, a `"` or a digit is read, so the following characters are included they do not match the grammar rule for an identifier. If the identifier matches a keyword, then it is a keyword instead.
+
+This way, all keywords can be detected, as well as all operators, identifiers and most string literals. This means that we can lex most basic hare programs, as we will see shortly.
+
 
 ### Context-Free Grammar
 
