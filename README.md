@@ -53,19 +53,61 @@ To create our lexical analyzer we decided to use a language called Hare. Hare is
 ## Development
 
 ### Lexer construction
-To create the lexer, first we needed to know what keywords formed part of the hare language so as to make clear to the lexer, if those words appeared, that they are not identifiers. Hare already has a document that has all of hare's keywords, called tokens.ha, which we used to cover all the keywords of hare language.
 
-As for the lexer code, the first thing you'll find in lex.ha is the structure of the lexer. After that, in the function called lex is where the magic starts to happen. First it advances to the next character, guaranteeing this way that it gets to the end of the document one way or another. Then, it checks if the character the code is on is a space or a newline, in which case it ccalls itself to continue. In is_word_rune, the function verifies if the token it is over is a valid start of an identifier, and, if it is, it calls the function lex_word_rune. after that, the next part verifies if the part you're on is a number, in which case it calls lex_number function. After that, it verifies if it's a puntctuation sign returning the value of the sign if it's one or, in case it is an operator character it calls the function lex_troll.
+One of the ways of creating a lexer for a programming language is to, using a CFG as a base, construct a DFA and code it out in some programming language. If *regex* are used to represent a template for each of the tokens, doing this would require writing a *regex* parser and generate code based on it, which is almost making a FLEX clone. Creating the DFA manually and writning code based on it is more tedious, but easier and quicker to do. While the code written is not a DFA explicitely, it consumes characters in the same order and following the same conditions as a DFA would.
 
-The function lex_word_rune verifies if the word that is analizing is valid as an identifier, validating character by character if it is valid as a part of an identifier.
+The Hare standard library already has a parser that works with Hare code. This means that we have a baseline we can follow and run our test against. In order to not write testing code twice, it was decided to write this lexer using the same interface as the lexer in the *stdlib*.
 
-The lex_number function validates if the number that hs been send is valid, validating numbers in base 10, hexadecimal and binary. After that, it goes through the number checking if it's a valid number or, in case it finds a non numerical character in the number it returns an error.
+The file tree for this project looks like this:
 
-The lex_troll function checks what kind of operator is on the code. If the operstor is longer than one character, it goes through the next symbols until it finds the end of the operator, validating with this all the cases of operators such as <= for example.
+```
+.
+├── INSTALLING_HARE.md
+├── lex
+│   ├── lex.ha
+│   └── token.ha
+├── LICENSE
+├── main.ha
+├── README.md
+└── testfiles
+    ├── fac.ha
+    ├── greeting.ha
+    ├── helloworld.ha
+    ├── readfile.ha
+    └── slice.ha
+```
 
-The lex_literal function works as a validator for Strings inside of quotation Marks, and for this, in lex, if the symbol found is one quotation mark, it calls the function lex_literal and goes through all the string until it finds the second quotation mark.
+The `main.ha` file contains the driver code for testing our lexer. The actual lexer is in the `lex` directory.
 
-All of the lexer functions are called through the lex function which is called in the main function in another document. The main function recieves the name of the document to analyze through the terminal, and reads the document with the lexer function until it finishes everything.
+A comprehensive list of keywords and operators is defined in the `token.ha` file along with some type definitions for representing the tokens themselves and a location in the text file. This file was taken from the original Hare code, because it saves time when looking for each keyword. The file, however, holds little to no logic.
+
+The lexer logic is in `lex.ha`. The lexer type definition is here and all the functions that manipulate it are here as well. Broadly, the `lex` function takes a lexer (whis is only a struct to hold the state of the lexer) and returns the next token. `lex` has to be called multiple times in order to get all tokens in a file.
+
+Whenever `lex` is called, the next rune (almost a synonym of character, but when talking of *UTF8* encoding) is read, updating the lexer state, and depending on the pattern it follows, a token is matched. When dealing with tokens that span more than one rune, more characters are consumed automatically and matched with the valid patterns.
+
+For example, when reading the `=` rune, the character after that is also read and compared with the following patterns: `==`, `=>`. If the second rune was a `=` or a `>`, we know the comparison operator or the arrow operator were read. If it is another thing, then we know it was the assignment operator and the lexer goes one rune back. The lexing process will continue with another `lex` call.
+
+If a digit is read, then more runes are consumed until they are not digits. This way integer constants can be recognized. Floating point constants are not included, because numbers are actually somewhat cumbersome to parse. Consider these:
+
+```c
+100 // Valid
+100.5 // valid
+001 // invalid
+560.8.1 //invalid
+1_000_000 // valid
+1_000_000_ // invalid
+10e4 /valid
+0b100101010110 // valid
+0o561764 // valid
+0xFFee00 // validmm
+0xGG0000 // invalid
+```
+
+We would need to encode these (and more) cases in order to make a full number lexer. This is why only positive integers in base 10, 2, 8 and 16 were included.
+
+String literals are read whenever a `"` is found. Identifiers are read whenever a character which is not part of an operator, a `"` or a digit is read, so the following characters are included they do not match the grammar rule for an identifier. If the identifier matches a keyword, then it is a keyword instead.
+
+This way, all keywords can be detected, as well as all operators, identifiers and most string literals. This means that we can lex most basic hare programs, as we will see shortly.
 
 
 ### Context-Free Grammar
