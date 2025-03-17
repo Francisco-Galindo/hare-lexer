@@ -17,22 +17,6 @@
   <p> México, CDMX. Marzo 2025 </p>
 </div>
 
-
-
-
-
-## Table of contents
-1. [Introduction](#introduction)
-2. [Theorical Background](#theoricalbackground)
-3. [Development](#development)
-   1. [Lexer construction](#lexerconstruction)
-   2. [Context-Free Grammar](#context-freegrammar)
-4. [Results](#results)
-5.  [Conclusion](#conclusion)
-6.   [Sources](#sources)
-
-
-
 ## Introduction
 In this project, our team will develope a lexer using the Hare programming language, both for implementing the lexical analyzer and for the language it will process. The lexer is one of the first stages on a compiler or interpreter, its main function is to take a sequence of characters from the input and transform it into a string of tokens, that represent meaningful sintactic units of the language.
 Using Hare as the development language will allow us to take advantage of its minimalist and efficient approach, ensuring a fast and reliable lexer. Throughout the development process, we will implement lexical rules that will define the structure of the target language, including identifiers, operators, keywords and other essential sintactic elements.
@@ -237,16 +221,11 @@ fn fac(n: int) int = {
 ```
 Here are some examples of DFA from the previous grammar:
 
-<img src="images/dfa_let.png" alt="let DFA " width="600"/>
-
-<img src="images/dfa_hare.png" alt="program DFA " width="1000"/>
-
-<img src="images/dfa_if.png" alt="if DFA " width="800"/>
-
-<img src="images/dfa_for.png" alt="for DFA " width="800"/>
-
-<img src="images/dfa_identifier.png" alt="identifier DFA " width="400"/>
-```
+![](images/dfa_let.png)
+![](images/dfa_hare.png)
+![](images/dfa_if.png)
+![](images/dfa_for.png)
+![](images/dfa_identifier.png)
 
 
 ### Test inputs
