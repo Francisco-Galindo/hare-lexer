@@ -152,7 +152,6 @@ This way, all keywords can be detected, as well as all operators, identifiers an
 The following context-free grammar was developed by the team as an initial step for the syntax analyzer, applying left factoring and right recursion to reduce ambiguity and avoid infinite loops. It is represented in Backus-Naur Form and is based on a reading example used as a test.
 ```
 <program> ::= <import> <function-declaration> <function-declaration>
-
 <import> ::= "use" <identifier> ";"
 
 <function-declaration> ::= <function-prefix> <identifier> "(" <parameters> ")" <return-type> "=" <block>
@@ -207,11 +206,15 @@ The following context-free grammar was developed by the team as an initial step 
 
 <conditional> ::= "if" "(" <condition> ")" <block>
 
+<primitive-type> ::= <integer> | <bool> | "void"
+
+<bool> ::= "True" | "False" 
+
 <integer> ::= [0-9]+
 
 <identifier> ::= [a-zA-Z_][a-zA-Z0-9_]*
 ```
-The reading example is the following Hare code (fac.ha), located in the testfiles directory:
+The reading example is the following Hare code (fac.ha), located in the testfiles directory. The CFG is specific for the code:
 
 ```hare
 use fmt;
@@ -231,6 +234,18 @@ fn fac(n: int) int = {
 	return n * fac(n-1);
 };
 
+```
+Here are some examples of DFA from the previous grammar:
+
+<img src="images/dfa_let.png" alt="let DFA " width="600"/>
+
+<img src="images/dfa_hare.png" alt="program DFA " width="1000"/>
+
+<img src="images/dfa_if.png" alt="if DFA " width="800"/>
+
+<img src="images/dfa_for.png" alt="for DFA " width="800"/>
+
+<img src="images/dfa_identifier.png" alt="identifier DFA " width="400"/>
 ```
 
 
@@ -309,7 +324,6 @@ Number of Tokens: 209
 ```
 
 Screenshots will be shown in the *results* section to provide more tangible proofs.
-
 
 ## Results
 
